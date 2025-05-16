@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { doctorService } from '../api/doctorService';
 import { Doctor } from '../types/doctor';
+import Link from 'next/link';
 
 export default function DoctorsPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -13,12 +14,9 @@ export default function DoctorsPage() {
     const fetchDoctors = async () => {
       try {
         setLoading(true);
-        const response = await doctorService.getDoctors();
-        if (response.error) {
-          setError(response.error);
-        } else if (response.data) {
-          setDoctors(response.data);
-        }
+        const data = await doctorService.getDoctors();
+        console.log('Doctors data:', data);
+        setDoctors(data);
       } catch (err) {
         setError('Failed to fetch doctors');
         console.error(err);
@@ -46,12 +44,12 @@ export default function DoctorsPage() {
     <div className="py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Doctors</h1>
-        <a
+        <Link
           href="/doctors/new"
           className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
         >
           Add New Doctor
-        </a>
+        </Link>
       </div>
 
       {doctors.length === 0 ? (
@@ -67,7 +65,7 @@ export default function DoctorsPage() {
                   Dr. {doctor.firstName} {doctor.lastName}
                 </h2>
                 <p className="text-gray-600 mb-4">{doctor.email}</p>
-                
+
                 {doctor.specializations && doctor.specializations.length > 0 && (
                   <div className="mb-4">
                     <h3 className="text-sm font-medium text-gray-500 mb-1">Specializations</h3>
@@ -83,20 +81,20 @@ export default function DoctorsPage() {
                     </div>
                   </div>
                 )}
-                
+
                 <div className="flex justify-end mt-4">
-                  <a
+                  <Link
                     href={`/doctors/${doctor.id}`}
                     className="text-blue-600 hover:text-blue-800 mr-4"
                   >
                     View
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href={`/doctors/${doctor.id}/edit`}
                     className="text-gray-600 hover:text-gray-800"
                   >
                     Edit
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

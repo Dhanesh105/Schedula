@@ -27,14 +27,32 @@ export async function fetchApi<T>(
       ...options.headers,
     };
 
+    // Add a timeout to the fetch request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
     const response = await fetch(url, {
       ...options,
       headers,
+      signal: controller.signal,
     });
 
-    const data = await response.json();
+    clearTimeout(timeoutId);
+
+    // Check if the response is JSON
+    const contentType = response.headers.get('content-type');
+    let data;
+
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      data = await response.text();
+      console.warn('Response is not JSON:', data);
+      throw new Error('Invalid response format');
+    }
 
     if (!response.ok) {
+      console.error('API error:', data);
       return {
         error: data.message || 'An error occurred while fetching data',
       };
@@ -42,6 +60,15 @@ export async function fetchApi<T>(
 
     return { data: data as T };
   } catch (error) {
+    console.error('Fetch error:', error);
+
+    // Check if it's a timeout error
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return {
+        error: 'Request timed out. Please try again later.',
+      };
+    }
+
     return {
       error: error instanceof Error ? error.message : 'An unknown error occurred',
     };
