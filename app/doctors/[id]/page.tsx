@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import { doctorService } from '../../api/doctorService';
 import { Doctor } from '../../types/doctor';
+import Link from 'next/link';
+
+// We'll handle the TypeScript error in a different way
 
 export default function DoctorDetailPage({ params }: { params: { id: string } }) {
   const [doctor, setDoctor] = useState<Doctor | null>(null);
@@ -53,9 +56,9 @@ export default function DoctorDetailPage({ params }: { params: { id: string } })
   return (
     <div className="py-8">
       <div className="mb-6">
-        <a href="/doctors" className="text-blue-600 hover:underline">
+        <Link href="/doctors" className="text-blue-600 hover:underline">
           &larr; Back to Doctors
-        </a>
+        </Link>
       </div>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">

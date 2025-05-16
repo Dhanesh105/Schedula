@@ -6,6 +6,9 @@ import { doctorService } from '../../api/doctorService';
 import { leaveService } from '../../api/leaveService';
 import { Doctor } from '../../types/doctor';
 import { Leave, LeaveStatus } from '../../types/leave';
+import Link from 'next/link';
+
+// We'll handle the TypeScript error in a different way
 
 export default function DoctorLeavesPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -130,14 +133,14 @@ export default function DoctorLeavesPage({ params }: { params: { id: string } })
   return (
     <div className="py-8">
       <div className="mb-6">
-        <a href="/leaves" className="text-blue-600 hover:underline">
+        <Link href="/leaves" className="text-blue-600 hover:underline">
           &larr; Back to Leaves
-        </a>
+        </Link>
       </div>
 
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">
-          Dr. {doctor.firstName} {doctor.lastName}'s Leaves
+          Dr. {doctor.firstName} {doctor.lastName}&apos;s Leaves
         </h1>
         <a
           href={`/leaves/${doctor.id}/new`}

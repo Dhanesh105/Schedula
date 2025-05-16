@@ -1,14 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { doctorService } from '../../api/doctorService';
 import { scheduleService } from '../../api/scheduleService';
 import { Doctor } from '../../types/doctor';
 import { WeeklySchedule } from '../../types/schedule';
+import Link from 'next/link';
 
 export default function DoctorSchedulePage({ params }: { params: { id: string } }) {
-  const router = useRouter();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [schedules, setSchedules] = useState<WeeklySchedule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,14 +82,14 @@ export default function DoctorSchedulePage({ params }: { params: { id: string } 
   return (
     <div className="py-8">
       <div className="mb-6">
-        <a href="/schedules" className="text-blue-600 hover:underline">
+        <Link href="/schedules" className="text-blue-600 hover:underline">
           &larr; Back to Schedules
-        </a>
+        </Link>
       </div>
 
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">
-          Dr. {doctor.firstName} {doctor.lastName}'s Schedule
+          Dr. {doctor.firstName} {doctor.lastName}&apos;s Schedule
         </h1>
         <a
           href={`/schedules/${doctor.id}/edit`}

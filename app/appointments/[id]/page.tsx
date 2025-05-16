@@ -13,12 +13,14 @@ import { patientService } from '../../api/patientService';
 import { Doctor } from '../../types/doctor';
 import { Patient } from '../../types/patient';
 
+// We'll handle the TypeScript error in a different way
+
 export default function AppointmentDetailsPage() {
   const { user } = useAuth();
   const params = useParams();
   const router = useRouter();
   const appointmentId = params.id as string;
-  
+
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -37,18 +39,18 @@ export default function AppointmentDetailsPage() {
 
         // Fetch appointment details
         const appointmentResponse = await appointmentService.getAppointmentById(appointmentId);
-        
+
         if (appointmentResponse.error) {
           setError(appointmentResponse.error);
           return;
         }
-        
+
         if (appointmentResponse.data) {
           setAppointment(appointmentResponse.data);
-          
+
           // In a real app, we would fetch doctor and patient details from the API
           // For now, we'll simulate the data
-          
+
           // Simulate doctor data
           setDoctor({
             id: appointmentResponse.data.doctorId,
@@ -65,7 +67,7 @@ export default function AppointmentDetailsPage() {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           });
-          
+
           // Simulate patient data
           setPatient({
             id: appointmentResponse.data.patientId,
@@ -95,14 +97,14 @@ export default function AppointmentDetailsPage() {
 
   const handleCancelAppointment = async () => {
     if (!appointment) return;
-    
+
     try {
       setActionLoading(true);
       setError(null);
       setSuccess(null);
-      
+
       const response = await appointmentService.cancelAppointment(appointment.id);
-      
+
       if (response.error) {
         setError(response.error);
       } else {
@@ -119,14 +121,14 @@ export default function AppointmentDetailsPage() {
 
   const handleUpdateStatus = async (status: AppointmentStatus) => {
     if (!appointment) return;
-    
+
     try {
       setActionLoading(true);
       setError(null);
       setSuccess(null);
-      
+
       const response = await appointmentService.updateAppointment(appointment.id, { status });
-      
+
       if (response.error) {
         setError(response.error);
       } else {
@@ -154,7 +156,7 @@ export default function AppointmentDetailsPage() {
       <div className="py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Appointment Details</h1>
-          
+
           <Link
             href="/appointments"
             className="text-blue-600 hover:underline flex items-center"
@@ -165,19 +167,19 @@ export default function AppointmentDetailsPage() {
             Back to Appointments
           </Link>
         </div>
-        
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
             <p>{error}</p>
           </div>
         )}
-        
+
         {success && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
             <p>{success}</p>
           </div>
         )}
-        
+
         {appointment && (
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -222,7 +224,7 @@ export default function AppointmentDetailsPage() {
                   )}
                 </div>
               </div>
-              
+
               <div>
                 {user?.role === UserRole.PATIENT && doctor && (
                   <div>
@@ -247,7 +249,7 @@ export default function AppointmentDetailsPage() {
                     </div>
                   </div>
                 )}
-                
+
                 {user?.role === UserRole.DOCTOR && patient && (
                   <div>
                     <h2 className="text-xl font-semibold mb-4">Patient Information</h2>
@@ -283,10 +285,10 @@ export default function AppointmentDetailsPage() {
                 )}
               </div>
             </div>
-            
+
             <div className="border-t border-gray-200 pt-6 mt-6">
               <h2 className="text-xl font-semibold mb-4">Actions</h2>
-              
+
               <div className="flex flex-wrap gap-4">
                 {appointment.status === AppointmentStatus.SCHEDULED && (
                   <>
@@ -297,7 +299,7 @@ export default function AppointmentDetailsPage() {
                     >
                       {actionLoading ? 'Processing...' : 'Cancel Appointment'}
                     </button>
-                    
+
                     {user?.role === UserRole.DOCTOR && (
                       <button
                         onClick={() => handleUpdateStatus(AppointmentStatus.CONFIRMED)}
@@ -309,7 +311,7 @@ export default function AppointmentDetailsPage() {
                     )}
                   </>
                 )}
-                
+
                 {user?.role === UserRole.DOCTOR && appointment.status === AppointmentStatus.CONFIRMED && (
                   <button
                     onClick={() => handleUpdateStatus(AppointmentStatus.COMPLETED)}
@@ -319,7 +321,7 @@ export default function AppointmentDetailsPage() {
                     {actionLoading ? 'Processing...' : 'Mark as Completed'}
                   </button>
                 )}
-                
+
                 {user?.role === UserRole.DOCTOR && appointment.status === AppointmentStatus.SCHEDULED && (
                   <button
                     onClick={() => handleUpdateStatus(AppointmentStatus.NO_SHOW)}

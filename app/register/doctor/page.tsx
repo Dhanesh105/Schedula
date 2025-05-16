@@ -47,7 +47,8 @@ export default function DoctorRegistrationPage() {
       return;
     }
 
-    const { confirmPassword, ...registrationData } = formData;
+    // Remove confirmPassword from the data sent to the API
+    const { confirmPassword: _, ...registrationData } = formData;
     await registerDoctor(registrationData);
   };
 
