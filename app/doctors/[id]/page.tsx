@@ -11,17 +11,26 @@ export default function DoctorDetailPage({ params }: { params: { id: string } })
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [doctorId, setDoctorId] = useState<string>('');
 
+  // Set the doctor ID from params only once when the component mounts
   useEffect(() => {
+    if (params && params.id) {
+      setDoctorId(params.id);
+    }
+  }, [params]);
+
+  // Use the state variable instead of directly accessing params.id
+  useEffect(() => {
+    // Skip the API call if doctorId is not set yet
+    if (!doctorId) return;
+
     const fetchDoctor = async () => {
       try {
         setLoading(true);
-        const response = await doctorService.getDoctorById(params.id);
-        if (response.error) {
-          setError(response.error);
-        } else if (response.data) {
-          setDoctor(response.data);
-        }
+        const data = await doctorService.getDoctorById(doctorId);
+        console.log('Doctor data:', data);
+        setDoctor(data);
       } catch (err) {
         setError('Failed to fetch doctor details');
         console.error(err);
@@ -31,7 +40,7 @@ export default function DoctorDetailPage({ params }: { params: { id: string } })
     };
 
     fetchDoctor();
-  }, [params.id]);
+  }, [doctorId]);
 
   if (loading) {
     return <div className="text-center py-8">Loading doctor details...</div>;
@@ -100,18 +109,18 @@ export default function DoctorDetailPage({ params }: { params: { id: string } })
               </div>
 
               <div className="mt-6 flex justify-center space-x-3">
-                <a
+                <Link
                   href={`/doctors/${doctor.id}/edit`}
                   className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
                 >
                   Edit Profile
-                </a>
-                <a
+                </Link>
+                <Link
                   href={`/schedules/${doctor.id}`}
                   className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors"
                 >
                   View Schedule
-                </a>
+                </Link>
               </div>
             </div>
           </div>
